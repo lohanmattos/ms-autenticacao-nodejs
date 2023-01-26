@@ -1,6 +1,7 @@
 import { Pool } from "pg";
+import auth from "../auth.db";
 
-const connectionString = "postgres://yunbtkvv:lyPfnOS_xt5PQKrLjT-58C3eMlbznviP@babar.db.elephantsql.com/yunbtkvv";
+const connectionString = auth
 
 const db = new Pool({connectionString});
 
