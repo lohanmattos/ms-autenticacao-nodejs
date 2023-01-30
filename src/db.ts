@@ -1,7 +1,9 @@
 import { Pool } from "pg";
-import auth from "../auth.db";
+import dotenv from "dotenv"
+dotenv.config();
 
-const connectionString = auth
+//usando variaves de ambiente para acessar a chave do banco de dados.
+const connectionString = process.env.AUTH_BD
 
 const db = new Pool({connectionString});
 
