@@ -26,13 +26,3 @@ São eles:
 ## Links úteis
 
 [Link](https://docs.google.com/presentation/d/1xcmu1IRAfPiWWEB6Y93ioVhup1McR3VY/edit?usp=sharing&ouid=111532941625525152923&rtpof=true&sd=true) para os slides utilizados dutante a live.
-
-
-// Separa o a string em 2 - uma o tipo de autentcação e outra as credencias
-        const [authorizationType, token] = authorizationHeader.split("");
-
-        if(authorizationType !== 'Basic' || !token){
-            throw new ForbiddenError("Tipo de autenciticação invalida");
-        }
-
-        const tokenContent = Buffer.from(token, 'base64').toString('utf8');

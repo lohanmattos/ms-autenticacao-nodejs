@@ -1,46 +1,45 @@
 import {Request, NextFunction, Response, Router } from "express";
+
+import JWT from "jsonwebtoken"; 
+import { StatusCodes } from "http-status-codes";
+import basicAuthenticationMiddleware from "../middlewares/basic-authentication.middleware";
 import ForbiddenError from "../models/errors/forbidden.error.models";
-import userRepository from "../repositories/user.repository";
 
 
 const authorizationRoute = Router();
 
-authorizationRoute.post('/token', async (req: Request, res: Response, next: NextFunction) => {
+authorizationRoute.post('/token', basicAuthenticationMiddleware, async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        //cria const com a informação do cabeçalho
-        const authorizationHeader = req.headers["authorization"];
+        //pega o usuario pela request
+        const user = req.user;
 
-        //Verifica se esta vazio. 
-        if(!authorizationHeader){
-            throw new ForbiddenError("Credencias não informadas")
-        }
-        
-        //Cria a const com a informação do cabeçalho, mapeando type e token
-        const [authorizationType, token] = authorizationHeader.split(' ');
-
-        //Verifica se o tipo do token é Basic 
-        //e se o toke foi passado
-        if (authorizationType !== 'Basic' || !token){
-            throw new ForbiddenError("Tipo de autenticação invalida");           
+        //Verifica se o usuario existe
+        if(!user){
+            throw new ForbiddenError("Usuario não informado");
         }
 
-        //Decodifica o toke para utf8
-        const tokenContent = Buffer.from(token, 'base64').toString('utf8');
-        //Separa username e password do token
-        const [username, password] = tokenContent.split(':');
+        /*
+        sub (subject) = Entidade à quem o token pertence, normalmente o ID do usuário;
+        iss (issuer) = Emissor do token;
+        exp (expiration) = Timestamp de quando o token irá expirar;
+        iat (issued at) = Timestamp de quando o token foi criado;
+        aud (audience) = Destinatário do token, representa a aplicação que irá usá-lo.    
+        */
 
-        //Verifica se os dados não foram passados
-        if (!username || !password){
-            throw new ForbiddenError("Credencias não preenchidas"); 
-        }
-        
-        //Consulta se o username e password exitem no banco de dados.
-        const user = await userRepository.findbyUsernameAndPassword(username, password);
 
-        console.log(user);
+        //Conteudo do token
+        const jwtPayload = { username: user.username};
+        //id do user
+        const jwtOptions = { subject: user?.uuid}
+        //Chave privada
+        const jwtSecret = "my_secret_key";
 
-        return res.sendStatus(200); 
+
+        const jwt = JWT.sign(jwtPayload, jwtSecret, jwtOptions);
+
+
+        res.status(StatusCodes.OK).json({token: jwt}); 
 
     } catch (error) {
         next(error);
