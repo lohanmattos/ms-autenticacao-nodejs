@@ -4,8 +4,10 @@ import authorizationRoute from "./routes/authorization.route";
 import statusRoute from "./routes/status.route";
 import userRoute from "./routes/users.route";
 
-const port = 3000;
 const app = express();
+const host = "http://localhost";
+const port = 3000;
+
 
 //Configuração da aplicação
 app.use(express.json());
@@ -21,5 +23,5 @@ app.use(errorHandler);
 
 //Inicialização do servidor
 app.listen(port, ()=> {
-    console.log("Servidor rodando na porta: " + port);
+    console.log(`Servidor Online: ${host}:${port}`);
 })

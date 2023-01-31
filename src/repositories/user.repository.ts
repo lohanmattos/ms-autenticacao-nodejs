@@ -41,6 +41,32 @@ class UserRepository {
         }
     }
 
+    //Consultar por username e password
+    async findbyUsernameAndPassword(username: string, password: string): Promise<User | null>{
+        try {
+            const query = `SELECT uuid, username 
+            FROM application_user 
+            WHERE username = $1
+            AND password = crypt($2, 'my-salt')
+            `;
+
+            //Dados a serem passados para a consulta
+            const valores = [username, password];
+
+            //Linha que retorna do banco de dados com o usuario se ele estiver cadastrado
+            const {rows} = await db.query<User>(query, valores);
+            
+            //Cria uma const com a primeira linha do array
+            const [user] = rows;
+
+            // se o usuario não existe return null, se existe return o user
+            return !user ? null : user
+        } catch (error) {
+            //Se der erro na consulta do banco de dados vai chamar o DatabaseError
+            throw new DatabaseError("Erro na consulta por username e password", error);
+        }
+    }
+
 
     //Cria um novo usuario
     async createUser(user: User): Promise<string> {
@@ -85,7 +111,7 @@ class UserRepository {
 
         const valor = [uuid];
         await db.query(script, valor);
-    }
+    } 
 
 }
 
