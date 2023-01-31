@@ -10,15 +10,6 @@ const authorizationRoute = Router();
 
 authorizationRoute.post('/token', basicAuthenticationMiddleware, async (req: Request, res: Response, next: NextFunction) => {
 
-    try {
-        //pega o usuario pela request
-        const user = req.user;
-
-        //Verifica se o usuario existe
-        if(!user){
-            throw new ForbiddenError("Usuario não informado");
-        }
-
         /*
         sub (subject) = Entidade à quem o token pertence, normalmente o ID do usuário;
         iss (issuer) = Emissor do token;
@@ -27,6 +18,14 @@ authorizationRoute.post('/token', basicAuthenticationMiddleware, async (req: Req
         aud (audience) = Destinatário do token, representa a aplicação que irá usá-lo.    
         */
 
+    try {
+        //pega o usuario pela request
+        const user = req.user;
+
+        //Verifica se o usuario existe
+        if(!user){
+            throw new ForbiddenError("Usuario não informado");
+        }
 
         //Conteudo do token
         const jwtPayload = { username: user.username};
