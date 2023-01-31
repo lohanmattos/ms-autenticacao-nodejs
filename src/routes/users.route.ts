@@ -1,7 +1,5 @@
 import { Router , Response, Request, NextFunction} from "express";
 import { StatusCodes } from "http-status-codes";
-import bearerAuthenticationMiddleware from "../middlewares/bearer-authentication.middleware";
-import DatabaseError from "../models/errors/dataBase.error.moldel";
 import userRepository from "../repositories/user.repository";
 
 const userRoute = Router();

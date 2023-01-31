@@ -1,9 +1,9 @@
 import express from "express";
-import bearerAuthenticationMiddleware from "./middlewares/bearer-authentication.middleware";
 import errorHandler from "./middlewares/error.handler.middleware";
 import authorizationRoute from "./routes/authorization.route";
 import statusRoute from "./routes/status.route";
 import userRoute from "./routes/users.route";
+import bearerAuthenticationMiddleware from "./middlewares/bearer-authentication.middleware.ts ";
 
 const app = express();
 const host = "http://localhost";
