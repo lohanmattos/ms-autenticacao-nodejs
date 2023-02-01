@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import ForbiddenError from "../models/errors/forbidden.error.models";
 import JWT from "jsonwebtoken"; 
 
-async function bearerAuthenticationMiddleware(req: Request, res: Response, next: NextFunction){
+async function jwtAuthenticationMiddleware(req: Request, res: Response, next: NextFunction){
     
     try {
         //Pegando os dados pelo cabeçalho
@@ -20,7 +20,8 @@ async function bearerAuthenticationMiddleware(req: Request, res: Response, next:
             throw new ForbiddenError("Tipo de autenticação invalida");           
         }
 
-        //Verifica se o token e válido.
+        try {
+            //Verifica se o token e válido.
         const tokenPayload = JWT.verify(token, "my_secret_key");
 
         //Verificar se o tipo do tokenPayload 
@@ -38,9 +39,13 @@ async function bearerAuthenticationMiddleware(req: Request, res: Response, next:
         req.user = user;
 
         next();
+        } catch (error) {
+            throw new ForbiddenError("Token invalido.")
+        }
+        
     } catch (error) {
         next(error);
     }
 }
 
-export default bearerAuthenticationMiddleware;
+export default jwtAuthenticationMiddleware;
